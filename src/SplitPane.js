@@ -31,7 +31,7 @@ function getDefaultSize(defaultSize, minSize, maxSize, draggedSize) {
 }
 
 function removeNullChildren(children) {
-  return React.Children.toArray(children).filter(c => c);
+  return React.Children.toArray(children).filter((c) => c);
 }
 class SplitPane extends React.Component {
   constructor(props) {
@@ -42,6 +42,7 @@ class SplitPane extends React.Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.last = false;
 
     // order of setting panel sizes.
     // 1. size
@@ -251,7 +252,13 @@ class SplitPane extends React.Component {
       resizerStyle,
       split,
       style: styleProps,
+      onActive,
     } = this.props;
+
+    if (this.last != this.state.active) {
+      onActive(this.state.active);
+      this.last = this.state.active;
+    }
 
     const { pane1Size, pane2Size } = this.state;
 
@@ -303,7 +310,7 @@ class SplitPane extends React.Component {
     return (
       <div
         className={classes.join(' ')}
-        ref={node => {
+        ref={(node) => {
           this.splitPane = node;
         }}
         style={style}
@@ -311,7 +318,7 @@ class SplitPane extends React.Component {
         <Pane
           className={pane1Classes}
           key="pane1"
-          eleRef={node => {
+          eleRef={(node) => {
             this.pane1 = node;
           }}
           size={pane1Size}
@@ -335,7 +342,7 @@ class SplitPane extends React.Component {
         <Pane
           className={pane2Classes}
           key="pane2"
-          eleRef={node => {
+          eleRef={(node) => {
             this.pane2 = node;
           }}
           size={pane2Size}
@@ -375,6 +382,7 @@ SplitPane.propTypes = {
   pane2Style: stylePropType,
   resizerClassName: PropTypes.string,
   step: PropTypes.number,
+  onActive: PropTypes.func,
 };
 
 SplitPane.defaultProps = {
@@ -385,6 +393,7 @@ SplitPane.defaultProps = {
   paneClassName: '',
   pane1ClassName: '',
   pane2ClassName: '',
+  onActive: () => {},
 };
 
 polyfill(SplitPane);

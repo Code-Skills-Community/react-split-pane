@@ -37,3 +37,4 @@ lcov.info
 dist
 build
 .cache
+.npmrc
